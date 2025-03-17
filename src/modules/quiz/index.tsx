@@ -158,7 +158,7 @@ export default function QuizPage() {
           </Dialog.Content>
         </Dialog.Root>
       </div>
-      <div className="mt-2 grid grid-cols-3 gap-4">
+      <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {allQuizzes.map((quiz) => (
           <Box key={quiz.title}>
             <Card
