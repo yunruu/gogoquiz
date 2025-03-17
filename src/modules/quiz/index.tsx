@@ -100,7 +100,7 @@ export default function QuizPage() {
             </Button>
           </Dialog.Trigger>
           <Dialog.Content
-            maxWidth="900px"
+            maxWidth={{ md: '900px', lg: '80vw' }}
             onInteractOutside={(e) => {
               e.preventDefault();
             }}
