@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { readJson, writeJson } from './service/storage';
 import { Quiz } from './types';
 
 const mathQuiz: Quiz = {
@@ -126,13 +127,22 @@ const historyQuiz = {
 
 const allQuizzes = [mathQuiz, scienceQuiz, historyQuiz];
 
+const injectData = () => {
+  writeJson('quiz', allQuizzes);
+};
+
 export const getAllQuizzes = (): Quiz[] => {
-  return allQuizzes;
+  const data = readJson('quiz') as Quiz[];
+  if (!data || data.length === 0) {
+    injectData();
+    return allQuizzes;
+  }
+  return data;
 };
 
 export const getQuizById = (id: string): Quiz => {
   try {
-    const quiz = allQuizzes.find((quiz) => quiz.id === id);
+    const quiz = getAllQuizzes().find((quiz) => quiz.id === id);
     if (!quiz) {
       throw new Error('Quiz not found');
     }
@@ -140,4 +150,22 @@ export const getQuizById = (id: string): Quiz => {
   } catch (e) {
     throw new Error('Quiz not found');
   }
+};
+
+export const createQuiz = (quiz: Quiz): void => {
+  if (!quiz.id) {
+    throw new Error('Quiz ID is required');
+  }
+  if (!quiz.title) {
+    throw new Error('Quiz title is required');
+  }
+  if (!quiz.description) {
+    throw new Error('Quiz description is required');
+  }
+  if (!quiz.questions || quiz.questions.length === 0) {
+    throw new Error('Quiz questions are required');
+  }
+  const quizzes = getAllQuizzes();
+  quizzes.push(quiz);
+  writeJson('quiz', quizzes);
 };
