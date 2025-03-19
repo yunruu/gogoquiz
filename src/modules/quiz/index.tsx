@@ -106,6 +106,9 @@ export default function QuizPage() {
             }}
           >
             <Dialog.Title mb="2">{sessionControl.quiz?.title}</Dialog.Title>
+            <Dialog.Description size="2" mb="4" hidden={true}>
+              Start quiz!
+            </Dialog.Description>
             <Separator my="3" size="4" />
             <Flex direction="column" gap="3">
               <ScrollArea type="auto" scrollbars="vertical" style={{ height: 400 }}>

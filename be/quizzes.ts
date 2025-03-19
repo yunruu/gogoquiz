@@ -82,12 +82,12 @@ const historyQuiz = {
       id: '2',
       title: 'What year did World War 2 end?',
       options: [
-        { text: '1945', isCorrect: true },
-        { text: '1940', isCorrect: false },
+        { text: '1945', isCorrect: false },
+        { text: '1937', isCorrect: true },
         { text: '1939', isCorrect: false },
         { text: '1941', isCorrect: false },
       ],
-      correctOption: 0,
+      correctOption: 1,
     },
     {
       id: '3',
@@ -104,23 +104,12 @@ const historyQuiz = {
       id: '4',
       title: 'What year did World War 1 start?',
       options: [
-        { text: '1912', isCorrect: true },
+        { text: '1912', isCorrect: false },
         { text: '1910', isCorrect: false },
-        { text: '1914', isCorrect: false },
+        { text: '1914', isCorrect: true },
         { text: '1916', isCorrect: false },
       ],
       correctOption: 2,
-    },
-    {
-      id: '5',
-      title: 'Who was the first president of the United States?',
-      options: [
-        { text: 'George Washington', isCorrect: true },
-        { text: 'Thomas Jefferson', isCorrect: false },
-        { text: 'John Adams', isCorrect: false },
-        { text: 'Abraham Lincoln', isCorrect: false },
-      ],
-      correctOption: 0,
     },
   ],
 };

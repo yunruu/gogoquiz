@@ -15,8 +15,9 @@ import {
 } from '@radix-ui/themes';
 import { useEffect, useState } from 'react';
 import { getAllQuizzes } from '../../../be/quizzes';
-import { Question, Quiz } from '../../../be/types';
+import { Option, Question, Quiz } from '../../../be/types';
 import { Cross1Icon } from '@radix-ui/react-icons';
+import { getUuid } from '@/utils/randomiser';
 
 export default function Manage() {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
@@ -24,6 +25,7 @@ export default function Manage() {
   const [questions, setQuestions] = useState<Partial<Question>[]>([
     {
       title: '',
+      id: getUuid(),
     },
   ]);
   const [formError, setFormError] = useState<string>();
@@ -42,6 +44,7 @@ export default function Manage() {
       ...prev,
       {
         title: '',
+        id: getUuid(),
       },
     ]);
   };
@@ -64,11 +67,6 @@ export default function Manage() {
 
     if (questions.some((q) => !q.title)) {
       setFormError('Questions must have a title');
-      return false;
-    }
-
-    if (questions.some((q) => !q.correctOption)) {
-      setFormError('Questions must have a correct option');
       return false;
     }
 
@@ -99,14 +97,55 @@ export default function Manage() {
     }));
   };
 
-  const editQuestion = (idx: number, key: 'title', value: string) => {
+  const editQuestion = (key: 'title', value: string, questionId?: string) => {
+    if (!questionId) return;
+
     setQuestions((prev) => {
       const updated = [...prev];
+
       if (updated[idx]) {
         updated[idx][key] = value;
       }
       return updated;
     });
+  };
+
+  const getOptionVal = (idx: number, options?: Option[]) => {
+    if (!options) {
+      return '';
+    }
+    return options[idx] ? options[idx].text : '';
+  };
+
+  const handleOptionChange = (questionIdx: number, optionIdx: number, value: string) => {
+    setQuestions((prev) => {
+      const updated = [...prev];
+      if (updated[questionIdx]) {
+        if (!updated[questionIdx].options) {
+          updated[questionIdx].options = [];
+        }
+        updated[questionIdx].options[optionIdx] = {
+          text: value,
+          isCorrect: false,
+        };
+      }
+      return updated;
+    });
+  };
+
+  const handleCorrectOptionRadioChange = (newValue: string, questionIdx: number) => {
+    setQuestions((prev) => {
+      const updated = [...prev];
+      if (updated[questionIdx]) {
+        updated[questionIdx].correctOption = parseInt(newValue) - 1;
+      }
+      return updated;
+    });
+  };
+
+  const deleteRow = (idx?: string) => {
+    if (!idx) return;
+    setQuestions(questions.filter((q) => q?.id !== idx));
   };
 
   return (
@@ -164,12 +203,12 @@ export default function Manage() {
                 </Flex>
 
                 {questions.map((question, idx) => (
-                  <div key={idx} className="flex flex-col gap-3 p-5 mb-4 border border-zinc-200 rounded-xl shadow-md">
+                  <div
+                    key={question.id || idx}
+                    className="flex flex-col gap-3 p-5 mb-4 border border-zinc-200 rounded-xl shadow-md"
+                  >
                     <div className="flex flex-row-reverse z-50">
-                      <IconButton
-                        variant="ghost"
-                        onClick={() => setQuestions((prev) => prev.filter((_, i) => i !== idx))}
-                      >
+                      <IconButton variant="ghost" onClick={() => deleteRow(question.id)}>
                         <Cross1Icon />
                       </IconButton>
                     </div>
@@ -181,7 +220,7 @@ export default function Manage() {
                         defaultValue={question.title}
                         placeholder="Input the question title"
                         onChange={(newValue) => {
-                          editQuestion(idx, 'title', newValue.target.value);
+                          editQuestion(question.id, 'title', newValue.target.value);
                         }}
                       />
                     </label>
@@ -190,21 +229,49 @@ export default function Manage() {
                         Options
                       </Text>
                       <Flex direction="column" gap="2">
-                        <RadioGroup.Root defaultValue={question.correctOption + ''} aria-label="Options">
+                        <RadioGroup.Root
+                          defaultValue={String((question.correctOption ?? 0) + 1)}
+                          aria-label="Options"
+                          onValueChange={(val) => handleCorrectOptionRadioChange(val, idx)}
+                        >
                           <Flex align="center" gap="2">
-                            <TextField.Root defaultValue="" placeholder="Input the option" />
+                            <TextField.Root
+                              defaultValue={getOptionVal(0, question.options)}
+                              onChange={(newValue) => {
+                                handleOptionChange(idx, 0, newValue.target.value);
+                              }}
+                              placeholder="Input the option"
+                            />
                             <RadioGroup.Item value="1">Correct</RadioGroup.Item>
                           </Flex>
                           <Flex align="center" gap="2">
-                            <TextField.Root defaultValue="" placeholder="Input the option" />
+                            <TextField.Root
+                              defaultValue={getOptionVal(1, question.options)}
+                              placeholder="Input the option"
+                              onChange={(newValue) => {
+                                handleOptionChange(idx, 1, newValue.target.value);
+                              }}
+                            />
                             <RadioGroup.Item value="2">Correct</RadioGroup.Item>
                           </Flex>
                           <Flex align="center" gap="2">
-                            <TextField.Root defaultValue="" placeholder="Input the option" />
+                            <TextField.Root
+                              defaultValue={getOptionVal(2, question.options)}
+                              placeholder="Input the option"
+                              onChange={(newValue) => {
+                                handleOptionChange(idx, 2, newValue.target.value);
+                              }}
+                            />
                             <RadioGroup.Item value="3">Correct</RadioGroup.Item>
                           </Flex>
                           <Flex align="center" gap="2">
-                            <TextField.Root defaultValue="" placeholder="Input the option" />
+                            <TextField.Root
+                              defaultValue={getOptionVal(3, question.options)}
+                              placeholder="Input the option"
+                              onChange={(newValue) => {
+                                handleOptionChange(idx, 3, newValue.target.value);
+                              }}
+                            />
                             <RadioGroup.Item value="4">Correct</RadioGroup.Item>
                           </Flex>
                         </RadioGroup.Root>
