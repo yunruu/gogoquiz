@@ -75,6 +75,11 @@ export default function Manage() {
       return false;
     }
 
+    if (questions.some(q => !q.options || q.options.length <= 0)) {
+      setFormError('Questions must have at least one option')
+      return false
+    }
+
     setFormError('');
     return true;
   };
@@ -100,14 +105,14 @@ export default function Manage() {
   const editQuestion = (key: 'title', value: string, questionId?: string) => {
     if (!questionId) return;
 
-    setQuestions((prev) => {
-      const updated = [...prev];
-
-      if (updated[idx]) {
-        updated[idx][key] = value;
-      }
-      return updated;
-    });
+    setQuestions((prev) =>
+      prev.map(q => {
+        if (questionId === q.id) {
+          q[key] = value
+        }
+        return q
+      })
+    );
   };
 
   const getOptionVal = (idx: number, options?: Option[]) => {
@@ -220,7 +225,7 @@ export default function Manage() {
                         defaultValue={question.title}
                         placeholder="Input the question title"
                         onChange={(newValue) => {
-                          editQuestion(question.id, 'title', newValue.target.value);
+                          editQuestion('title', newValue.target.value, question.id);
                         }}
                       />
                     </label>
