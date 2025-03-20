@@ -18,15 +18,21 @@ import { createQuiz, getAllQuizzes } from '../../../be/quizzes';
 import { Option, Question, Quiz } from '../../../be/types';
 import { Cross1Icon } from '@radix-ui/react-icons';
 import { getUuid } from '@/utils/randomiser';
-import { toast } from 'react-toastify';
-import CustomToast from '@/components/custom-toast';
+import CustomToast, { customToast } from '@/components/custom-toast';
 import { validateForm } from './validator';
 
-const quizOverviewCols = ["Title", "Description", "No. questions"]
+const quizOverviewCols = ['Title', 'Description', 'No. questions'];
+
+const getOptionVal = (idx: number, options?: Option[]) => {
+  if (!options) {
+    return '';
+  }
+  return options[idx] ? options[idx].text : '';
+};
 
 export default function Manage() {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
-  const [newQuiz, setNewQuiz] = useState<Partial<Quiz>>();
+  const [newQuiz, setNewQuiz] = useState<Quiz>(new Quiz('', '', '', []));
   const [questions, setQuestions] = useState<Partial<Question>[]>([
     {
       title: '',
@@ -34,6 +40,7 @@ export default function Manage() {
     },
   ]);
   const [formError, setFormError] = useState<string>();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchQuizzes = async () => {
@@ -55,19 +62,25 @@ export default function Manage() {
   };
 
   const handleSave = () => {
+    if (!newQuiz) return;
     if (!validateForm(setFormError, newQuiz as Quiz, questions as Question[])) {
       return;
     }
+    newQuiz.questions = questions as Question[];
     try {
-      const res = createQuiz(newQuiz as Quiz);
+      createQuiz(newQuiz as Quiz);
+      setIsDialogOpen(false);
+      customToast('Quiz created', { type: 'success' });
       refresh();
     } catch (e) {
-      toast('Error creating quiz', { type: 'error' });
+      if (e instanceof Error) {
+        customToast('Error creating quiz', { type: 'error', error: e });
+      }
     }
   };
 
   const refresh = () => {
-    setNewQuiz(undefined);
+    setNewQuiz(new Quiz('', '', '', []));
     setQuestions([
       {
         title: '',
@@ -75,57 +88,55 @@ export default function Manage() {
       },
     ]);
     setQuizzes(getAllQuizzes());
-  }
+  };
 
   const editForm = (key: 'title' | 'description', value: string) => {
-    setNewQuiz((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
+    setNewQuiz((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        [key]: value,
+      };
+    });
   };
 
   const editQuestion = (key: 'title', value: string, questionId?: string) => {
     if (!questionId) return;
 
     setQuestions((prev) =>
-      prev.map(q => {
+      prev.map((q) => {
         if (questionId === q.id) {
-          q[key] = value
+          q[key] = value;
         }
-        return q
+        return q;
       })
     );
   };
 
-  const getOptionVal = (idx: number, options?: Option[]) => {
-    if (!options) {
-      return '';
-    }
-    return options[idx] ? options[idx].text : '';
-  };
+  const handleOptionChange = (optionIdx: number, value: string, questionIdx?: string) => {
+    if (!questionIdx) return;
 
-  const handleOptionChange = (questionIdx: number, optionIdx: number, value: string) => {
     setQuestions((prev) => {
       const updated = [...prev];
-      if (updated[questionIdx]) {
-        if (!updated[questionIdx].options) {
-          updated[questionIdx].options = [];
-        }
-        updated[questionIdx].options[optionIdx] = {
-          text: value,
-          isCorrect: false,
-        };
+      const q = updated.find((q) => q.id === questionIdx);
+      if (!q) return updated;
+      if (!q.options) {
+        q.options = [];
       }
+      q.options[optionIdx] = {
+        text: value,
+      };
       return updated;
     });
   };
 
-  const handleCorrectOptionRadioChange = (newValue: string, questionIdx: number) => {
+  const handleCorrectOptionRadioChange = (newValue: string, questionIdx?: string) => {
+    if (!questionIdx) return;
     setQuestions((prev) => {
       const updated = [...prev];
-      if (updated[questionIdx]) {
-        updated[questionIdx].correctOption = parseInt(newValue) - 1;
-      }
+      const q = updated.find((q) => q.id === questionIdx);
+      if (!q) return updated;
+      q.correctOption = parseInt(newValue) - 1;
       return updated;
     });
   };
@@ -141,7 +152,7 @@ export default function Manage() {
         <Heading size="4" ml="1">
           Manage quiz
         </Heading>
-        <Dialog.Root>
+        <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <Dialog.Trigger>
             <Button variant="outline">Create quiz</Button>
           </Dialog.Trigger>
@@ -219,22 +230,20 @@ export default function Manage() {
                         <RadioGroup.Root
                           defaultValue={String((question.correctOption ?? 0) + 1)}
                           aria-label="Options"
-                          onValueChange={(val) => handleCorrectOptionRadioChange(val, idx)}
+                          onValueChange={(val) => handleCorrectOptionRadioChange(val, question.id)}
                         >
-                          {
-                            Array.from({ length: 4 }).map((_, i) => (
-                              <Flex align="center" gap="2" key={i}>
-                                <TextField.Root
-                                  defaultValue={getOptionVal(i, question.options)}
-                                  onChange={(newValue) => {
-                                    handleOptionChange(idx, i, newValue.target.value);
-                                  }}
-                                  placeholder="Input the option"
-                                />
-                                <RadioGroup.Item value={String(i + 1)}>Correct</RadioGroup.Item>
-                              </Flex>
-                            ))
-                          }
+                          {Array.from({ length: 4 }).map((_, i) => (
+                            <Flex align="center" gap="2" key={i}>
+                              <TextField.Root
+                                defaultValue={getOptionVal(i, question.options)}
+                                onChange={(newValue) => {
+                                  handleOptionChange(i, newValue.target.value, question.id);
+                                }}
+                                placeholder="Input the option"
+                              />
+                              <RadioGroup.Item value={String(i + 1)}>Correct</RadioGroup.Item>
+                            </Flex>
+                          ))}
                         </RadioGroup.Root>
                       </Flex>
                     </label>
@@ -262,11 +271,9 @@ export default function Manage() {
       <Table.Root variant="surface">
         <Table.Header>
           <Table.Row>
-            {
-              quizOverviewCols.map(col => (
-                <Table.ColumnHeaderCell key={col}>{col}</Table.ColumnHeaderCell>
-              ))
-            }
+            {quizOverviewCols.map((col) => (
+              <Table.ColumnHeaderCell key={col}>{col}</Table.ColumnHeaderCell>
+            ))}
           </Table.Row>
         </Table.Header>
 
