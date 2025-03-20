@@ -14,10 +14,13 @@ import {
   TextField,
 } from '@radix-ui/themes';
 import { useEffect, useState } from 'react';
-import { getAllQuizzes } from '../../../be/quizzes';
+import { createQuiz, getAllQuizzes } from '../../../be/quizzes';
 import { Option, Question, Quiz } from '../../../be/types';
 import { Cross1Icon } from '@radix-ui/react-icons';
 import { getUuid } from '@/utils/randomiser';
+import { toast } from 'react-toastify';
+import CustomToast from '@/components/custom-toast';
+import { validateForm } from './validator';
 
 const quizOverviewCols = ["Title", "Description", "No. questions"]
 
@@ -34,7 +37,7 @@ export default function Manage() {
 
   useEffect(() => {
     const fetchQuizzes = async () => {
-      const data = await getAllQuizzes();
+      const data = getAllQuizzes();
       setQuizzes(data);
     };
 
@@ -51,51 +54,30 @@ export default function Manage() {
     ]);
   };
 
-  const validateForm = () => {
-    if (!newQuiz?.title) {
-      setFormError('Title is required');
-      return false;
-    }
-
-    if (!newQuiz?.description) {
-      setFormError('Description is required');
-      return false;
-    }
-
-    if (!questions || questions.length === 0) {
-      setFormError('Questions are required');
-      return false;
-    }
-
-    if (questions.some((q) => !q.title)) {
-      setFormError('Questions must have a title');
-      return false;
-    }
-
-    if (isDuplicateQuestionTitle()) {
-      setFormError('Questions must have unique titles');
-      return false;
-    }
-
-    if (questions.some(q => !q.options || q.options.length <= 0)) {
-      setFormError('Questions must have at least one option')
-      return false
-    }
-
-    setFormError('');
-    return true;
-  };
-
-  const isDuplicateQuestionTitle = () => {
-    const titles = questions.map((q) => q.title);
-    return new Set(titles).size !== titles.length;
-  };
-
   const handleSave = () => {
-    if (!validateForm()) {
+    toast('Error creating quiz', { type: 'error' });
+
+    if (!validateForm(setFormError, newQuiz as Quiz, questions as Question[])) {
       return;
     }
+    try {
+      const res = createQuiz(newQuiz as Quiz);
+      refresh();
+    } catch (e) {
+      toast('Error creating quiz', { type: 'error' });
+    }
   };
+
+  const refresh = () => {
+    setNewQuiz(undefined);
+    setQuestions([
+      {
+        title: '',
+        id: getUuid(),
+      },
+    ]);
+    setQuizzes(getAllQuizzes());
+  }
 
   const editForm = (key: 'title' | 'description', value: string) => {
     setNewQuiz((prev) => ({
@@ -243,7 +225,7 @@ export default function Manage() {
                         >
                           {
                             Array.from({ length: 4 }).map((_, i) => (
-                              <Flex align="center" gap="2">
+                              <Flex align="center" gap="2" key={i}>
                                 <TextField.Root
                                   defaultValue={getOptionVal(i, question.options)}
                                   onChange={(newValue) => {
@@ -284,7 +266,7 @@ export default function Manage() {
           <Table.Row>
             {
               quizOverviewCols.map(col => (
-                <Table.ColumnHeaderCell>{col}</Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell key={col}>{col}</Table.ColumnHeaderCell>
               ))
             }
           </Table.Row>
@@ -300,6 +282,7 @@ export default function Manage() {
           ))}
         </Table.Body>
       </Table.Root>
+      <CustomToast />
     </Box>
   );
 }
