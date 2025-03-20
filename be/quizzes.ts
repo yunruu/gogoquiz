@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { readJson, writeJson } from './service/storage';
+import { getItem, setItem } from './service/storage';
 import { Quiz } from './types';
+
+const QUIZ_KEY = "quiz";
 
 const mathQuiz: Quiz = {
   id: '1',
@@ -117,11 +119,11 @@ const historyQuiz = {
 const allQuizzes = [mathQuiz, scienceQuiz, historyQuiz];
 
 const injectData = () => {
-  writeJson('quiz', allQuizzes);
+  setItem(QUIZ_KEY, allQuizzes);
 };
 
 export const getAllQuizzes = (): Quiz[] => {
-  const data = readJson('quiz') as Quiz[];
+  const data = getItem(QUIZ_KEY) as Quiz[];
   if (!data || data.length === 0) {
     injectData();
     return allQuizzes;
@@ -156,5 +158,5 @@ export const createQuiz = (quiz: Quiz): void => {
   }
   const quizzes = getAllQuizzes();
   quizzes.push(quiz);
-  writeJson('quiz', quizzes);
+  setItem(QUIZ_KEY, quizzes);
 };
