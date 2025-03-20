@@ -143,7 +143,7 @@ export const getQuizById = (id: string): Quiz => {
   }
 };
 
-export const createQuiz = (quiz: Quiz): void => {
+export const createQuiz = (quiz: Quiz): Quiz => {
   if (!quiz.id) {
     throw new Error('Quiz ID is required');
   }
@@ -174,4 +174,5 @@ export const createQuiz = (quiz: Quiz): void => {
   const quizzes = getAllQuizzes();
   quizzes.push(quiz);
   setItem(QUIZ_KEY, quizzes);
+  return quiz;
 };
