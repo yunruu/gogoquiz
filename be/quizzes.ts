@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { getUuid } from '@/utils/randomiser';
 import allQuizzes from './mock_data/mock_quiz';
 import { getItem, setItem } from './service/storage';
 import { Quiz } from './types';
 
-const QUIZ_KEY = "quiz";
-
+const QUIZ_KEY = 'quiz';
 
 const injectData = () => {
   setItem(QUIZ_KEY, allQuizzes);
@@ -32,9 +32,8 @@ export const getQuizById = (id: string): Quiz => {
 };
 
 export const createQuiz = (quiz: Quiz): Quiz => {
-  if (!quiz.id) {
-    throw new Error('Quiz ID is required');
-  }
+  quiz.id = getUuid();
+
   if (!quiz.title) {
     throw new Error('Quiz title is required');
   }
@@ -52,9 +51,6 @@ export const createQuiz = (quiz: Quiz): Quiz => {
   }
   if (quiz.questions.some((q) => q.options.some((o) => !o.text))) {
     throw new Error('Quiz question options must have text');
-  }
-  if (quiz.questions.some((q) => q.options.filter((o) => o.isCorrect).length !== 1)) {
-    throw new Error('Quiz question must have exactly one correct option');
   }
   if (quiz.questions.some((q) => q.correctOption < 0 || q.correctOption >= q.options.length)) {
     throw new Error('Quiz question correct option is invalid');
