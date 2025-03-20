@@ -19,6 +19,8 @@ import { Option, Question, Quiz } from '../../../be/types';
 import { Cross1Icon } from '@radix-ui/react-icons';
 import { getUuid } from '@/utils/randomiser';
 
+const quizOverviewCols = ["Title", "Description", "No. questions"]
+
 export default function Manage() {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [newQuiz, setNewQuiz] = useState<Partial<Quiz>>();
@@ -253,7 +255,6 @@ export default function Manage() {
                               </Flex>
                             ))
                           }
-
                         </RadioGroup.Root>
                       </Flex>
                     </label>
@@ -281,9 +282,11 @@ export default function Manage() {
       <Table.Root variant="surface">
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeaderCell>Title</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell>Description</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell>No. questions</Table.ColumnHeaderCell>
+            {
+              quizOverviewCols.map(col => (
+                <Table.ColumnHeaderCell>{col}</Table.ColumnHeaderCell>
+              ))
+            }
           </Table.Row>
         </Table.Header>
 
