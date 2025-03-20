@@ -239,46 +239,21 @@ export default function Manage() {
                           aria-label="Options"
                           onValueChange={(val) => handleCorrectOptionRadioChange(val, idx)}
                         >
-                          <Flex align="center" gap="2">
-                            <TextField.Root
-                              defaultValue={getOptionVal(0, question.options)}
-                              onChange={(newValue) => {
-                                handleOptionChange(idx, 0, newValue.target.value);
-                              }}
-                              placeholder="Input the option"
-                            />
-                            <RadioGroup.Item value="1">Correct</RadioGroup.Item>
-                          </Flex>
-                          <Flex align="center" gap="2">
-                            <TextField.Root
-                              defaultValue={getOptionVal(1, question.options)}
-                              placeholder="Input the option"
-                              onChange={(newValue) => {
-                                handleOptionChange(idx, 1, newValue.target.value);
-                              }}
-                            />
-                            <RadioGroup.Item value="2">Correct</RadioGroup.Item>
-                          </Flex>
-                          <Flex align="center" gap="2">
-                            <TextField.Root
-                              defaultValue={getOptionVal(2, question.options)}
-                              placeholder="Input the option"
-                              onChange={(newValue) => {
-                                handleOptionChange(idx, 2, newValue.target.value);
-                              }}
-                            />
-                            <RadioGroup.Item value="3">Correct</RadioGroup.Item>
-                          </Flex>
-                          <Flex align="center" gap="2">
-                            <TextField.Root
-                              defaultValue={getOptionVal(3, question.options)}
-                              placeholder="Input the option"
-                              onChange={(newValue) => {
-                                handleOptionChange(idx, 3, newValue.target.value);
-                              }}
-                            />
-                            <RadioGroup.Item value="4">Correct</RadioGroup.Item>
-                          </Flex>
+                          {
+                            Array.from({ length: 4 }).map((_, i) => (
+                              <Flex align="center" gap="2">
+                                <TextField.Root
+                                  defaultValue={getOptionVal(i, question.options)}
+                                  onChange={(newValue) => {
+                                    handleOptionChange(idx, i, newValue.target.value);
+                                  }}
+                                  placeholder="Input the option"
+                                />
+                                <RadioGroup.Item value={String(i + 1)}>Correct</RadioGroup.Item>
+                              </Flex>
+                            ))
+                          }
+
                         </RadioGroup.Root>
                       </Flex>
                     </label>
