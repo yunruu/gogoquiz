@@ -13,6 +13,10 @@ export interface ISessionControl {
   quiz?: Quiz;
 }
 
+const isSelectedOptionCorrect = (optionIdx: number, correctIdx: number) => {
+  return optionIdx === correctIdx;
+};
+
 export default function QuizPage() {
   const [allQuizzes, setAllQuizzes] = useState<Quiz[]>([]);
   const [sessionControl, setSessionControl] = useState<ISessionControl>({
@@ -59,9 +63,9 @@ export default function QuizPage() {
     setSelectedOption(undefined);
   };
 
-  const handleSelectAnswer = (selectedOption: Option) => {
+  const handleSelectAnswer = (selectedOption: Option, optionIdx: number, correctOptionIdx: number) => {
     setSelectedOption(selectedOption);
-    if (selectedOption.isCorrect) {
+    if (isSelectedOptionCorrect(optionIdx, correctOptionIdx)) {
       setSessionControl({ ...sessionControl, correctAnswers: sessionControl.correctAnswers + 1 });
     }
   };
@@ -71,9 +75,9 @@ export default function QuizPage() {
     return selectedOption.text === option.text;
   };
 
-  const selectedOptionStyle = (option: Option) => {
+  const selectedOptionStyle = (option: Option, optionIdx: number, correctOptionIdx: number) => {
     return isOptionSelected(option)
-      ? option.isCorrect
+      ? isSelectedOptionCorrect(optionIdx, correctOptionIdx)
         ? 'bg-green-200 border-green-600 hover:bg-green-200'
         : 'reset bg-rose-200 border-rose-600 hover:bg-rose-200'
       : selectedOption
@@ -123,8 +127,12 @@ export default function QuizPage() {
                     {currQuestion?.options.map((option, idx) => (
                       <button
                         key={idx}
-                        className={`p-4 border-2 rounded-lg cursor-pointer ${selectedOptionStyle(option)}`}
-                        onClick={() => handleSelectAnswer(option)}
+                        className={`p-4 border-2 rounded-lg cursor-pointer ${selectedOptionStyle(
+                          option,
+                          idx,
+                          currQuestion.correctOption
+                        )}`}
+                        onClick={() => handleSelectAnswer(option, idx, currQuestion.correctOption)}
                         disabled={!!selectedOption}
                       >
                         <Flex gap="2" align="center">
