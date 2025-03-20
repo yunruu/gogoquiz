@@ -55,8 +55,6 @@ export default function Manage() {
   };
 
   const handleSave = () => {
-    toast('Error creating quiz', { type: 'error' });
-
     if (!validateForm(setFormError, newQuiz as Quiz, questions as Question[])) {
       return;
     }
