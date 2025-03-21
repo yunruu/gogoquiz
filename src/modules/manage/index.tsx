@@ -15,12 +15,14 @@ import {
   TextField,
 } from '@radix-ui/themes';
 import { useEffect, useState } from 'react';
-import { createQuiz, getAllQuizzes } from '../../../be/quizzes';
-import { Option, Question, Quiz } from '../../../be/types';
-import { Cross1Icon, DownloadIcon, HamburgerMenuIcon, UploadIcon } from '@radix-ui/react-icons';
+import { createQuiz, getAllQuizzes, importQuizzes } from '../../../be/quizzes';
+import { ImportType, Option, Question, Quiz } from '../../../be/types';
+import { Cross1Icon, DownloadIcon, HamburgerMenuIcon } from '@radix-ui/react-icons';
 import { getUuid } from '@/utils/randomiser';
 import CustomToast, { customToast } from '@/components/custom-toast';
 import { validateForm } from './validator';
+import { exportJson } from '@/utils/data';
+import CustomQuizImport from '@/components/custom-quiz-import';
 
 const quizOverviewCols = ['Title', 'Description', 'No. questions'];
 
@@ -42,6 +44,7 @@ export default function Manage() {
   ]);
   const [formError, setFormError] = useState<string>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
 
   useEffect(() => {
     const fetchQuizzes = async () => {
@@ -145,6 +148,29 @@ export default function Manage() {
   const deleteRow = (idx?: string) => {
     if (!idx) return;
     setQuestions(questions.filter((q) => q?.id !== idx));
+  };
+
+  const downloadQuizzes = () => {
+    exportJson(quizzes, 'quizzes.json');
+  };
+
+  const importQuiz = (data: unknown, importType: ImportType) => {
+    setIsHamburgerOpen(false);
+    const importedQuizzes = data as Quiz[];
+    if (!importedQuizzes) {
+      customToast('Invalid data', { type: 'error' });
+      return;
+    }
+    try {
+      const res = importQuizzes(importedQuizzes, importType);
+      refresh();
+    } catch (e) {
+      if (e instanceof Error) {
+        customToast('Error importing quizzes', { type: 'error', error: e });
+      }
+      return;
+    }
+    customToast('Imported quizzes', { type: 'success' });
   };
 
   return (
@@ -268,26 +294,22 @@ export default function Manage() {
               </Flex>
             </Dialog.Content>
           </Dialog.Root>
-          <Popover.Root>
+          <Popover.Root open={isHamburgerOpen} onOpenChange={setIsHamburgerOpen}>
             <Popover.Trigger>
               <IconButton size="3" variant="ghost">
                 <HamburgerMenuIcon />
               </IconButton>
             </Popover.Trigger>
-            <Popover.Content>
-              <div className="flex flex-col gap-3 px-1">
-                <Button size="3" variant="ghost">
+            <Popover.Content className="!p-2">
+              <div className="flex flex-col gap-1">
+                <button
+                  className="flex items-center justify-center gap-5 cursor-pointer rounded hover:bg-violet-50 px-4 py-2 w-full"
+                  onClick={downloadQuizzes}
+                >
                   <DownloadIcon />
-                  <Text size="2" ml="4">
-                    Download
-                  </Text>
-                </Button>
-                <Button size="3" variant="ghost">
-                  <UploadIcon />
-                  <Text size="2" ml="4">
-                    Export
-                  </Text>
-                </Button>
+                  <Text size="2">Download</Text>
+                </button>
+                <CustomQuizImport onImport={importQuiz} />
               </div>
             </Popover.Content>
           </Popover.Root>
