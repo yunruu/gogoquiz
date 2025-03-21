@@ -2,7 +2,7 @@
 import { getUuid } from '@/utils/randomiser';
 import allQuizzes from './mock_data/mock_quiz';
 import { getItem, setItem } from './service/storage';
-import { Quiz } from './types';
+import { ImportType, Quiz } from './types';
 
 const QUIZ_KEY = 'quiz';
 
@@ -13,8 +13,7 @@ const injectData = () => {
 export const getAllQuizzes = (): Quiz[] => {
   const data = getItem(QUIZ_KEY) as Quiz[];
   if (!data || data.length === 0) {
-    injectData();
-    return getAllQuizzes();
+    return [];
   }
   return data;
 };
@@ -59,4 +58,45 @@ export const createQuiz = (quiz: Quiz): Quiz => {
   quizzes.push(quiz);
   setItem(QUIZ_KEY, quizzes);
   return quiz;
+};
+
+export const importQuizzes = (quizzes: Quiz[], importType: ImportType): Quiz[] => {
+  console.log('importing quizzes', importType);
+  const idSet = new Set<string>();
+  const allQuizzes = getAllQuizzes();
+
+  for (const quiz of allQuizzes) {
+    idSet.add(quiz.id);
+  }
+
+  for (const quiz of quizzes) {
+    // skip if duplicate quiz id already exists
+    if (idSet.has(quiz.id)) {
+      continue;
+    }
+    // generate new id if not provided
+    quiz.id = quiz.id || getUuid();
+
+    switch (importType) {
+      case ImportType.Overwrite:
+        let hit = false;
+        for (let i = 0; i < allQuizzes.length; i++) {
+          if (allQuizzes[i].title === quiz.title) {
+            allQuizzes[i] = quiz;
+            hit = true;
+            break;
+          }
+        }
+        // no duplicate title
+        if (!hit) {
+          allQuizzes.push(quiz);
+        }
+        break;
+      case ImportType.Merge:
+        allQuizzes.push(quiz);
+        break;
+    }
+  }
+  setItem(QUIZ_KEY, allQuizzes);
+  return allQuizzes;
 };
