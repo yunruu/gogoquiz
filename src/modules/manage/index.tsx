@@ -17,7 +17,7 @@ import {
 import { useEffect, useState } from 'react';
 import { createQuiz, getAllQuizzes, importQuizzes } from '../../../be/quizzes';
 import { ImportType, Option, Question, Quiz } from '../../../be/types';
-import { Cross1Icon, DownloadIcon, HamburgerMenuIcon } from '@radix-ui/react-icons';
+import { Cross1Icon, DownloadIcon, FileIcon, HamburgerMenuIcon } from '@radix-ui/react-icons';
 import { getUuid } from '@/utils/randomiser';
 import CustomToast, { customToast } from '@/components/custom-toast';
 import { validateForm } from './validator';
@@ -315,25 +315,33 @@ export default function Manage() {
           </Popover.Root>
         </Flex>
       </Flex>
-      <Table.Root variant="surface">
-        <Table.Header>
-          <Table.Row>
-            {quizOverviewCols.map((col) => (
-              <Table.ColumnHeaderCell key={col}>{col}</Table.ColumnHeaderCell>
-            ))}
-          </Table.Row>
-        </Table.Header>
-
-        <Table.Body>
-          {quizzes.map((quiz) => (
-            <Table.Row key={quiz.id}>
-              <Table.RowHeaderCell>{quiz.title}</Table.RowHeaderCell>
-              <Table.Cell>{quiz.description}</Table.Cell>
-              <Table.Cell>{quiz.questions.length}</Table.Cell>
+      {quizzes.length > 0 ? (
+        <Table.Root variant="surface">
+          <Table.Header>
+            <Table.Row>
+              {quizOverviewCols.map((col) => (
+                <Table.ColumnHeaderCell key={col}>{col}</Table.ColumnHeaderCell>
+              ))}
             </Table.Row>
-          ))}
-        </Table.Body>
-      </Table.Root>
+          </Table.Header>
+          <Table.Body>
+            {quizzes.map((quiz) => (
+              <Table.Row key={quiz.id}>
+                <Table.RowHeaderCell>{quiz.title}</Table.RowHeaderCell>
+                <Table.Cell>{quiz.description}</Table.Cell>
+                <Table.Cell>{quiz.questions.length}</Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table.Root>
+      ) : (
+        <div className="max-w-64 md:max-w-full flex flex-col justify-center items-center mt-12 h-20 gap-2 m-auto">
+          <FileIcon color="gray" />
+          <Text color="gray" align="center">
+            No quizzes available. Add one or import a Quiz json file!
+          </Text>
+        </div>
+      )}
       <CustomToast />
     </Box>
   );
