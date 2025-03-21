@@ -27,6 +27,7 @@ export default function QuizPage() {
   const [randomQuestions, setRandomQuestions] = useState<Question[]>([]);
   const [currQuestion, setCurrQuestion] = useState<Question>();
   const [selectedOption, setSelectedOption] = useState<Option>();
+  const [isQuizEnd, setIsQuizEnd] = useState(false);
 
   const selectQuiz = (quiz: Quiz) => {
     setSessionControl({ ...sessionControl, quiz: quiz });
@@ -61,12 +62,16 @@ export default function QuizPage() {
     setCurrQuestion(undefined);
     setRandomQuestions([]);
     setSelectedOption(undefined);
+    setIsQuizEnd(false);
   };
 
   const handleSelectAnswer = (selectedOption: Option, optionIdx: number, correctOptionIdx: number) => {
     setSelectedOption(selectedOption);
     if (isSelectedOptionCorrect(optionIdx, correctOptionIdx)) {
       setSessionControl({ ...sessionControl, correctAnswers: sessionControl.correctAnswers + 1 });
+    }
+    if (randomQuestions.length === 0) {
+      setIsQuizEnd(true);
     }
   };
 
@@ -150,9 +155,8 @@ export default function QuizPage() {
               </ScrollArea>
             </Flex>
             <Flex gap="3" mt="4" justify="end" align="center">
-              {randomQuestions.length > 0 ? (
-                <Button onClick={getNextQuestion}>Next</Button>
-              ) : (
+              {randomQuestions.length > 0 && <Button onClick={getNextQuestion}>Next</Button>}
+              {isQuizEnd && (
                 <Badge
                   size="3"
                   color={sessionControl.correctAnswers === sessionControl.totalQuestions ? 'green' : 'ruby'}
