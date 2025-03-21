@@ -171,7 +171,7 @@ export default function QuizPage() {
       </div>
       <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {allQuizzes.map((quiz) => (
-          <Box key={quiz.title}>
+          <Box key={quiz.id}>
             <Card
               onClick={() => selectQuiz(quiz)}
               className={`cursor-pointer hover:bg-violet-100 active:bg-violet-300 ${selectedQuizStyles(quiz)}`}
