@@ -1,4 +1,4 @@
-const APP_KEY = 'myquizmod_storage_key_';
+const APP_KEY = 'gogoquiz_storage_key_';
 
 export const setItem = (key: string, value: unknown) => {
   const data = JSON.stringify(value);

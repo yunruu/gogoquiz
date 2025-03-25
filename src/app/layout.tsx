@@ -8,11 +8,13 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="antialiased m-4 mt-18">
-      <Theme accentColor="violet">
-        <Navbar className="fixed top-0 left-0 w-full shadow-xl" />
-        <main>{children}</main>
-      </Theme>
-    </div>
+    <html>
+      <body className="antialiased">
+        <Theme accentColor="violet">
+          <Navbar className="w-full shadow-xl mb-4" />
+          <main className="px-4">{children}</main>
+        </Theme>
+      </body>
+    </html>
   );
 }
