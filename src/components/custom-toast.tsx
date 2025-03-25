@@ -1,4 +1,5 @@
 import { Slide, toast, ToastContainer } from 'react-toastify';
+import { capitalizeFirst } from '@/utils/string';
 
 export interface ICustomToastOptions {
   type?: 'success' | 'error' | 'info' | 'warning';
@@ -7,9 +8,10 @@ export interface ICustomToastOptions {
 
 export const customToast = (message: string, options: ICustomToastOptions) => {
   if (options.error) {
-    return toast(`${message}: ${options.error.message}`, { type: 'error' });
+    message = capitalizeFirst(`${message}: ${options.error.message}`);
+    return toast(message, { type: 'error' });
   }
-  return toast(message, { type: options.type });
+  return toast(capitalizeFirst(message), { type: options.type });
 };
 
 export default function CustomToast() {
