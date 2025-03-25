@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { getUuid } from '@/utils/randomiser';
 import allQuizzes from './mock_data/mock_quiz';
 import { getItem, setItem } from './service/storage';
