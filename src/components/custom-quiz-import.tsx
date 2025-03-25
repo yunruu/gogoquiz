@@ -63,7 +63,12 @@ export default function CustomQuizImport({ onImport }: ICustomFileUploadProps) {
             />
           </div>
         </Dialog.Trigger>
-        <Dialog.Content maxWidth="500px">
+        <Dialog.Content
+          maxWidth="500px"
+          onInteractOutside={(e) => {
+            e.preventDefault();
+          }}
+        >
           <Flex width="100%" justify="between">
             <Dialog.Title>Import quiz</Dialog.Title>
             <Dialog.Close>
@@ -76,8 +81,8 @@ export default function CustomQuizImport({ onImport }: ICustomFileUploadProps) {
             Import quiz confirmation dialog
           </Dialog.Description>
           <Text size="2" mb="4">
-            Overwrite merge with current quizzes? Note that new quiz with conflicting titles will be ignored. This
-            action cannot be undone.
+            Merge or overwrite quizzes with conflicting titles? Note that new quiz with conflicting ids will be ignored.
+            This action cannot be undone.
           </Text>
           <Flex gap="3" mt="6" justify="end">
             <Dialog.Close>
