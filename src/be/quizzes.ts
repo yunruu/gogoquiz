@@ -1,13 +1,12 @@
 import { getUuid } from '@/utils/randomiser';
-import allQuizzes from './mock_data/mock_quiz';
 import { getItem, setItem } from './service/storage';
 import { ImportType, Quiz } from './types';
 
 const QUIZ_KEY = 'quiz';
 
-const injectData = () => {
-  setItem(QUIZ_KEY, allQuizzes);
-};
+// const injectData = () => {
+//   setItem(QUIZ_KEY, allQuizzes);
+// };
 
 export const getAllQuizzes = (): Quiz[] => {
   const data = getItem(QUIZ_KEY) as Quiz[];
@@ -18,15 +17,11 @@ export const getAllQuizzes = (): Quiz[] => {
 };
 
 export const getQuizById = (id: string): Quiz => {
-  try {
-    const quiz = getAllQuizzes().find((quiz) => quiz.id === id);
-    if (!quiz) {
-      throw new Error('Quiz not found');
-    }
-    return quiz;
-  } catch (e) {
+  const quiz = getAllQuizzes().find((quiz) => quiz.id === id);
+  if (!quiz) {
     throw new Error('Quiz not found');
   }
+  return quiz;
 };
 
 export const createQuiz = (quiz: Quiz): Quiz => {
