@@ -99,3 +99,14 @@ export const deleteQuiz = (id: string): Quiz[] => {
   setItem(QUIZ_KEY, quizzes);
   return quizzes;
 };
+
+export const editQuiz = (quiz: Quiz): Quiz => {
+  const quizzes = getAllQuizzes();
+  const index = quizzes.findIndex((q) => q.id === quiz.id);
+  if (index < 0) {
+    throw new Error('Quiz not found');
+  }
+  quizzes[index] = quiz;
+  setItem(QUIZ_KEY, quizzes);
+  return quiz;
+};
