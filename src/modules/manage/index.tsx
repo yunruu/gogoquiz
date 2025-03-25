@@ -6,7 +6,6 @@ import {
   Button,
   Dialog,
   Flex,
-  Heading,
   IconButton,
   Popover,
   RadioGroup,
