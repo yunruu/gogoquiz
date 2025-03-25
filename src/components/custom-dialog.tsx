@@ -37,7 +37,11 @@ export default function CustomDialog(options: ICustomDialogOptions) {
           <Button>{options.triggerButtonText}</Button>
         )}
       </Dialog.Trigger>
-      <Dialog.Content>
+      <Dialog.Content
+        onInteractOutside={(e) => {
+          e.preventDefault();
+        }}
+      >
         <div className="flex justify-between">
           <Dialog.Title>{options.title}</Dialog.Title>
           <Dialog.Close>
