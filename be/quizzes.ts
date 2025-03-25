@@ -100,3 +100,9 @@ export const importQuizzes = (quizzes: Quiz[], importType: ImportType): Quiz[] =
   setItem(QUIZ_KEY, allQuizzes);
   return allQuizzes;
 };
+
+export const deleteQuiz = (id: string): Quiz[] => {
+  const quizzes = getAllQuizzes().filter((quiz) => quiz.id !== id);
+  setItem(QUIZ_KEY, quizzes);
+  return quizzes;
+};
