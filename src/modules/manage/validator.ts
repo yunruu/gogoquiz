@@ -1,5 +1,5 @@
 import { Dispatch } from 'react';
-import { Question, Quiz } from '../../../be/types';
+import { Question, Quiz } from '@/be/types';
 import { SetStateAction } from 'react';
 
 const isDuplicateQuestionTitle = (questions: Question[]) => {

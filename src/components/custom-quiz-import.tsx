@@ -1,7 +1,7 @@
 import { Cross1Icon, UploadIcon } from '@radix-ui/react-icons';
 import { Button, Dialog, Flex, Text } from '@radix-ui/themes';
 import { useRef, useState } from 'react';
-import { ImportType } from '../../be/types';
+import { ImportType } from '@/be/types';
 
 export interface ICustomFileUploadProps {
   onImport: (data: unknown, importTyp: ImportType) => void;

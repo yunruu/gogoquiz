@@ -15,8 +15,8 @@ import {
   TextField,
 } from '@radix-ui/themes';
 import { useEffect, useState } from 'react';
-import { createQuiz, deleteQuiz, getAllQuizzes, importQuizzes } from '../../../be/quizzes';
-import { ImportType, Option, Question, Quiz } from '../../../be/types';
+import { createQuiz, deleteQuiz, getAllQuizzes, importQuizzes } from '@/be/quizzes';
+import { ImportType, Option, Question, Quiz } from '@/be/types';
 import { Cross1Icon, DownloadIcon, FileIcon, HamburgerMenuIcon, Pencil2Icon, TrashIcon } from '@radix-ui/react-icons';
 import { getUuid } from '@/utils/randomiser';
 import CustomToast, { customToast } from '@/components/custom-toast';

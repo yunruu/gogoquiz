@@ -2,8 +2,8 @@
 
 import { Badge, Box, Button, Card, Dialog, Flex, ScrollArea, Separator, Text } from '@radix-ui/themes';
 import { useEffect, useState } from 'react';
-import { Option, Question, Quiz } from '../../../be/types';
-import { getAllQuizzes } from '../../../be/quizzes';
+import { Option, Question, Quiz } from '@/be/types';
+import { getAllQuizzes } from '@/be/quizzes';
 import { shuffleArray } from '@/utils/randomiser';
 import Image from 'next/image';
 
