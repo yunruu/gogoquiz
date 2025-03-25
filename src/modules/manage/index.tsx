@@ -165,7 +165,20 @@ export default function Manage() {
   };
 
   const downloadQuizzes = () => {
-    exportJson(quizzes, 'quizzes.json');
+    const filename = `${getFormattedDateTime()}_gogoquiz.json`;
+    exportJson(quizzes, filename);
+  };
+
+  const getFormattedDateTime = () => {
+    const now = new Date();
+
+    const dd = String(now.getDate()).padStart(2, '0');
+    const mm = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const yy = String(now.getFullYear()).slice(-2);
+    const hh = String(now.getHours()).padStart(2, '0');
+    const min = String(now.getMinutes()).padStart(2, '0');
+
+    return `${dd}${mm}${yy}${hh}${min}`;
   };
 
   const importQuiz = (data: unknown, importType: ImportType) => {
@@ -202,145 +215,140 @@ export default function Manage() {
 
   return (
     <Box py="4">
-      <Flex justify="between" align="center" mb="4">
-        <Heading size="4" ml="1">
-          Manage quiz
-        </Heading>
-        <Flex gap="4" align="center">
-          <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <Dialog.Trigger>
-              <Button variant="outline">Create quiz</Button>
-            </Dialog.Trigger>
+      <Flex align="center" justify="end" mb="4" gap="4">
+        <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <Dialog.Trigger>
+            <Button variant="outline">Create quiz</Button>
+          </Dialog.Trigger>
 
-            <Dialog.Content
-              maxWidth={{ md: '900px', lg: '80vw' }}
-              onInteractOutside={(e) => {
-                e.preventDefault();
-              }}
-            >
-              <Dialog.Title>Create quiz</Dialog.Title>
-              <Dialog.Description size="2" mb="4" hidden={true}>
-                Add a new quiz!
-              </Dialog.Description>
-              <Separator my="3" size="4" />
+          <Dialog.Content
+            maxWidth={{ md: '900px', lg: '80vw' }}
+            onInteractOutside={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <Dialog.Title>Create quiz</Dialog.Title>
+            <Dialog.Description size="2" mb="4" hidden={true}>
+              Add a new quiz!
+            </Dialog.Description>
+            <Separator my="3" size="4" />
 
-              <ScrollArea type="hover" scrollbars="vertical" style={{ height: '60vh' }}>
-                <Flex direction="column" gap="3">
-                  <label>
-                    <Text as="div" size="2" mb="1" weight="bold" mt="3">
-                      Title
-                    </Text>
-                    <TextField.Root
-                      defaultValue={newQuiz?.title}
-                      placeholder="Input the quiz title"
-                      onChange={(newValue) => editForm('title', newValue.target.value)}
-                    />
-                  </label>
-                  <label>
-                    <Text as="div" size="2" mb="1" weight="bold">
-                      Description
-                    </Text>
-                    <TextField.Root
-                      defaultValue={newQuiz?.description}
-                      placeholder="Input the quiz description"
-                      onChange={(newValue) => editForm('description', newValue.target.value)}
-                    />
-                  </label>
-                  <Flex gap="3" align="center" justify="between" my="1">
-                    <Text as="div" size="2" weight="bold">
-                      Questions
-                    </Text>
-                    <Button variant="soft" onClick={handleAddNewQuestion}>
-                      New question
-                    </Button>
-                  </Flex>
-
-                  {questions.map((question, idx) => (
-                    <div
-                      key={question.id || idx}
-                      className="flex flex-col gap-3 p-5 mb-4 border border-zinc-200 rounded-xl shadow-md"
-                    >
-                      <div className="flex flex-row-reverse z-50">
-                        <IconButton variant="ghost" onClick={() => deleteRow(question.id)}>
-                          <Cross1Icon />
-                        </IconButton>
-                      </div>
-                      <label>
-                        <Text as="div" size="2" mb="1" mt="-5" weight="bold">
-                          Title
-                        </Text>
-                        <TextField.Root
-                          defaultValue={question.title}
-                          placeholder="Input the question title"
-                          onChange={(newValue) => {
-                            editQuestion('title', newValue.target.value, question.id);
-                          }}
-                        />
-                      </label>
-                      <label>
-                        <Text as="div" size="2" mb="1" weight="bold">
-                          Options
-                        </Text>
-                        <Flex direction="column" gap="2">
-                          <RadioGroup.Root
-                            defaultValue={String((question.correctOption ?? 0) + 1)}
-                            aria-label="Options"
-                            onValueChange={(val) => handleCorrectOptionRadioChange(val, question.id)}
-                          >
-                            {Array.from({ length: 4 }).map((_, i) => (
-                              <Flex align="center" gap="2" key={i}>
-                                <TextField.Root
-                                  defaultValue={getOptionVal(i, question.options)}
-                                  onChange={(newValue) => {
-                                    handleOptionChange(i, newValue.target.value, question.id);
-                                  }}
-                                  placeholder="Input the option"
-                                />
-                                <RadioGroup.Item value={String(i + 1)}>Correct</RadioGroup.Item>
-                              </Flex>
-                            ))}
-                          </RadioGroup.Root>
-                        </Flex>
-                      </label>
-                    </div>
-                  ))}
-                </Flex>
-              </ScrollArea>
-              <Flex gap="3" mt="4" justify="end" align="center">
-                {formError && (
-                  <Badge size="3" color="red">
-                    Error: {formError}!
-                  </Badge>
-                )}
-                <Dialog.Close>
-                  <Button variant="soft" color="gray">
-                    Cancel
+            <ScrollArea type="hover" scrollbars="vertical" style={{ height: '60vh' }}>
+              <Flex direction="column" gap="3">
+                <label>
+                  <Text as="div" size="2" mb="1" weight="bold" mt="3">
+                    Title
+                  </Text>
+                  <TextField.Root
+                    defaultValue={newQuiz?.title}
+                    placeholder="Input the quiz title"
+                    onChange={(newValue) => editForm('title', newValue.target.value)}
+                  />
+                </label>
+                <label>
+                  <Text as="div" size="2" mb="1" weight="bold">
+                    Description
+                  </Text>
+                  <TextField.Root
+                    defaultValue={newQuiz?.description}
+                    placeholder="Input the quiz description"
+                    onChange={(newValue) => editForm('description', newValue.target.value)}
+                  />
+                </label>
+                <Flex gap="3" align="center" justify="between" my="1">
+                  <Text as="div" size="2" weight="bold">
+                    Questions
+                  </Text>
+                  <Button variant="soft" onClick={handleAddNewQuestion}>
+                    New question
                   </Button>
-                </Dialog.Close>
-                <Button onClick={handleSave}>Save</Button>
+                </Flex>
+
+                {questions.map((question, idx) => (
+                  <div
+                    key={question.id || idx}
+                    className="flex flex-col gap-3 p-5 mb-4 border border-zinc-200 rounded-xl shadow-md"
+                  >
+                    <div className="flex flex-row-reverse z-50">
+                      <IconButton variant="ghost" onClick={() => deleteRow(question.id)}>
+                        <Cross1Icon />
+                      </IconButton>
+                    </div>
+                    <label>
+                      <Text as="div" size="2" mb="1" mt="-5" weight="bold">
+                        Title
+                      </Text>
+                      <TextField.Root
+                        defaultValue={question.title}
+                        placeholder="Input the question title"
+                        onChange={(newValue) => {
+                          editQuestion('title', newValue.target.value, question.id);
+                        }}
+                      />
+                    </label>
+                    <label>
+                      <Text as="div" size="2" mb="1" weight="bold">
+                        Options
+                      </Text>
+                      <Flex direction="column" gap="2">
+                        <RadioGroup.Root
+                          defaultValue={String((question.correctOption ?? 0) + 1)}
+                          aria-label="Options"
+                          onValueChange={(val) => handleCorrectOptionRadioChange(val, question.id)}
+                        >
+                          {Array.from({ length: 4 }).map((_, i) => (
+                            <Flex align="center" gap="2" key={i}>
+                              <TextField.Root
+                                defaultValue={getOptionVal(i, question.options)}
+                                onChange={(newValue) => {
+                                  handleOptionChange(i, newValue.target.value, question.id);
+                                }}
+                                placeholder="Input the option"
+                              />
+                              <RadioGroup.Item value={String(i + 1)}>Correct</RadioGroup.Item>
+                            </Flex>
+                          ))}
+                        </RadioGroup.Root>
+                      </Flex>
+                    </label>
+                  </div>
+                ))}
               </Flex>
-            </Dialog.Content>
-          </Dialog.Root>
-          <Popover.Root open={isHamburgerOpen} onOpenChange={setIsHamburgerOpen}>
-            <Popover.Trigger>
-              <IconButton size="3" variant="ghost">
-                <HamburgerMenuIcon />
-              </IconButton>
-            </Popover.Trigger>
-            <Popover.Content className="!p-2">
-              <div className="flex flex-col gap-1">
-                <button
-                  className="flex items-center justify-center gap-5 cursor-pointer rounded hover:bg-violet-50 px-4 py-2 w-full"
-                  onClick={downloadQuizzes}
-                >
-                  <DownloadIcon />
-                  <Text size="2">Download</Text>
-                </button>
-                <CustomQuizImport onImport={importQuiz} />
-              </div>
-            </Popover.Content>
-          </Popover.Root>
-        </Flex>
+            </ScrollArea>
+            <Flex gap="3" mt="4" justify="end" align="center">
+              {formError && (
+                <Badge size="3" color="red">
+                  Error: {formError}!
+                </Badge>
+              )}
+              <Dialog.Close>
+                <Button variant="soft" color="gray">
+                  Cancel
+                </Button>
+              </Dialog.Close>
+              <Button onClick={handleSave}>Save</Button>
+            </Flex>
+          </Dialog.Content>
+        </Dialog.Root>
+        <Popover.Root open={isHamburgerOpen} onOpenChange={setIsHamburgerOpen}>
+          <Popover.Trigger>
+            <IconButton size="3" variant="ghost">
+              <HamburgerMenuIcon />
+            </IconButton>
+          </Popover.Trigger>
+          <Popover.Content className="!p-2">
+            <div className="flex flex-col gap-1">
+              <button
+                className="flex items-center justify-center gap-5 cursor-pointer rounded hover:bg-violet-50 px-4 py-2 w-full"
+                onClick={downloadQuizzes}
+              >
+                <DownloadIcon />
+                <Text size="2">Download</Text>
+              </button>
+              <CustomQuizImport onImport={importQuiz} />
+            </div>
+          </Popover.Content>
+        </Popover.Root>
       </Flex>
       {quizzes.length > 0 ? (
         <Table.Root variant="surface">
@@ -373,7 +381,7 @@ export default function Manage() {
         <div className="max-w-64 md:max-w-full flex flex-col justify-center items-center mt-12 h-20 gap-2 m-auto">
           <FileIcon color="gray" />
           <Text color="gray" align="center">
-            No quizzes available. Add one or import a Quiz json file!
+            No quizzes available. Create one or import a Quiz file!
           </Text>
         </div>
       )}
