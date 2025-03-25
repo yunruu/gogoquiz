@@ -15,16 +15,17 @@ import {
   TextField,
 } from '@radix-ui/themes';
 import { useEffect, useState } from 'react';
-import { createQuiz, getAllQuizzes, importQuizzes } from '../../../be/quizzes';
+import { createQuiz, deleteQuiz, getAllQuizzes, importQuizzes } from '../../../be/quizzes';
 import { ImportType, Option, Question, Quiz } from '../../../be/types';
-import { Cross1Icon, DownloadIcon, FileIcon, HamburgerMenuIcon } from '@radix-ui/react-icons';
+import { Cross1Icon, DownloadIcon, FileIcon, HamburgerMenuIcon, Pencil2Icon, TrashIcon } from '@radix-ui/react-icons';
 import { getUuid } from '@/utils/randomiser';
 import CustomToast, { customToast } from '@/components/custom-toast';
 import { validateForm } from './validator';
 import { exportJson } from '@/utils/data';
 import CustomQuizImport from '@/components/custom-quiz-import';
+import CustomDialog, { ICustomDialogOptions } from '@/components/custom-dialog';
 
-const quizOverviewCols = ['Title', 'Description', 'No. questions'];
+const quizOverviewCols = ['Title', 'Description', 'No. questions', 'Action'];
 
 const getOptionVal = (idx: number, options?: Option[]) => {
   if (!options) {
@@ -45,6 +46,17 @@ export default function Manage() {
   const [formError, setFormError] = useState<string>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
+
+  const deleteDialogOptions: ICustomDialogOptions = {
+    triggerButtonText: 'Delete',
+    title: 'Delete quiz',
+    description: 'Are you sure you want to delete this quiz?',
+    content: '',
+    triggerButtonStyle: 'icon',
+    triggerButtonIcon: <TrashIcon />,
+    type: 'warning',
+    onConfirm: (data) => handleDeleteRow(data as string),
+  };
 
   useEffect(() => {
     const fetchQuizzes = async () => {
@@ -162,7 +174,7 @@ export default function Manage() {
       return;
     }
     try {
-      const res = importQuizzes(importedQuizzes, importType);
+      importQuizzes(importedQuizzes, importType);
       refresh();
     } catch (e) {
       if (e instanceof Error) {
@@ -171,6 +183,19 @@ export default function Manage() {
       return;
     }
     customToast('Imported quizzes', { type: 'success' });
+  };
+
+  const handleDeleteRow = (id: string) => {
+    console.log('deleting', id);
+    try {
+      deleteQuiz(id);
+      refresh();
+      customToast('Quiz deleted', { type: 'success' });
+    } catch (e) {
+      if (e instanceof Error) {
+        customToast('Error deleting quiz', { type: 'error', error: e });
+      }
+    }
   };
 
   return (
@@ -330,6 +355,14 @@ export default function Manage() {
                 <Table.RowHeaderCell>{quiz.title}</Table.RowHeaderCell>
                 <Table.Cell>{quiz.description}</Table.Cell>
                 <Table.Cell>{quiz.questions.length}</Table.Cell>
+                <Table.Cell width="10%">
+                  <div className="flex gap-4">
+                    <IconButton variant="ghost">
+                      <Pencil2Icon />
+                    </IconButton>
+                    <CustomDialog {...deleteDialogOptions} data={quiz.id} />
+                  </div>
+                </Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>
