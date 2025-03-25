@@ -92,8 +92,8 @@ export default function QuizPage() {
   };
 
   useEffect(() => {
-    const fetchQuizzes = async () => {
-      const res = await getAllQuizzes();
+    const fetchQuizzes = () => {
+      const res = getAllQuizzes();
       setAllQuizzes(res);
     };
 

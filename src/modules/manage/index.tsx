@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Badge,
   Box,
@@ -59,7 +61,7 @@ export default function Manage() {
   };
 
   useEffect(() => {
-    const fetchQuizzes = async () => {
+    const fetchQuizzes = () => {
       const data = getAllQuizzes();
       setQuizzes(data);
     };

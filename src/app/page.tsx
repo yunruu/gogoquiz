@@ -1,11 +1,8 @@
-import type { ReactElement } from 'react';
-import Layout from '../components/layout';
-import type { PageWithLayout } from './_app';
 import { Box, Tabs } from '@radix-ui/themes';
 import Quiz from '../modules/quiz';
 import Manage from '../modules/manage';
 
-const Page: PageWithLayout = () => {
+export default function IndexPage() {
   return (
     <div>
       <Tabs.Root defaultValue="quiz">
@@ -24,10 +21,4 @@ const Page: PageWithLayout = () => {
       </Tabs.Root>
     </div>
   );
-};
-
-Page.getLayout = function getLayout(page: ReactElement) {
-  return <Layout>{page}</Layout>;
-};
-
-export default Page;
+}
