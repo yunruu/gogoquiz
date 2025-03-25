@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { Option, Question, Quiz } from '../../../be/types';
 import { getAllQuizzes } from '../../../be/quizzes';
 import { shuffleArray } from '@/utils/randomiser';
+import Image from 'next/image';
 
 export interface ISessionControl {
   hasSessionStarted: boolean;
@@ -142,7 +143,7 @@ export default function QuizPage() {
                       >
                         <Flex gap="2" align="center">
                           {option.image && (
-                            <img src={option.image} alt={option.text} style={{ width: 50, height: 50 }} />
+                            <Image src={option.image} alt={option.text} style={{ width: 50, height: 50 }} />
                           )}
                           <Text as="div" size="2" color="gray">
                             {option.text}
