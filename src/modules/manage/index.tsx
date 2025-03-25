@@ -167,6 +167,7 @@ export default function Manage() {
   const downloadQuizzes = () => {
     const filename = `${getFormattedDateTime()}_gogoquiz.json`;
     exportJson(quizzes, filename);
+    setIsHamburgerOpen(false);
   };
 
   const getFormattedDateTime = () => {
