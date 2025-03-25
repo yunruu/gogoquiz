@@ -201,7 +201,6 @@ export default function Manage() {
   };
 
   const handleDeleteRow = (id: string) => {
-    console.log('deleting', id);
     try {
       deleteQuiz(id);
       refresh();

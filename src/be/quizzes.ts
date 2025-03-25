@@ -55,7 +55,6 @@ export const createQuiz = (quiz: Quiz): Quiz => {
 };
 
 export const importQuizzes = (quizzes: Quiz[], importType: ImportType): Quiz[] => {
-  console.log('importing quizzes', importType);
   const idSet = new Set<string>();
   const allQuizzes = getAllQuizzes();
 
