@@ -6,6 +6,7 @@ import { Option, Question, Quiz } from '@/be/types';
 import { getAllQuizzes } from '@/be/quizzes';
 import { shuffleArray } from '@/utils/randomiser';
 import Image from 'next/image';
+import { FileIcon } from '@radix-ui/react-icons';
 
 export interface ISessionControl {
   hasSessionStarted: boolean;
@@ -102,7 +103,7 @@ export default function QuizPage() {
 
   return (
     <div>
-      <div className="flex flex-row-reverse">
+      <div className="flex justify-end mt-4">
         <Dialog.Root>
           <Dialog.Trigger>
             <Button disabled={!sessionControl.quiz} onClick={startQuiz}>
@@ -174,6 +175,14 @@ export default function QuizPage() {
           </Dialog.Content>
         </Dialog.Root>
       </div>
+      {allQuizzes.length === 0 && (
+        <div className="max-w-64 md:max-w-full flex flex-col justify-center items-center mt-12 h-20 gap-2 m-auto">
+          <FileIcon color="gray" />
+          <Text color="gray" align="center">
+            No quizzes available. Create one in the <em>Manage</em> tab!
+          </Text>
+        </div>
+      )}
       <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {allQuizzes.map((quiz) => (
           <Box key={quiz.id}>
