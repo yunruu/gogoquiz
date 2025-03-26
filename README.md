@@ -20,4 +20,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 Alternatively, you can use the pre-deployed one [here](https://gogoquiz.vercel.app/)!
 
+Feel free to import the sample quizzes we have to get started.
+1. Download the sample json file in our repository, under mock > quizzes.json
+2. In the web app, go to **Manage** tab, click on the hamburger icon, and click **Import**. Find the sample json file and import it.
+
 Happy quizzing~
