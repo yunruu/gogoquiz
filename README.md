@@ -28,4 +28,16 @@ Feel free to import the sample quizzes we have to familiarise yourself with the 
 1. Download the sample json file in our repository, under mock > quizzes.json
 2. In the web app, go to **Manage** tab, click on the hamburger icon, and click **Import**. Find the sample json file and import it.
 
-Happy quizzing~
+## Data storage
+
+Data is stored in your browser's local storage. To save your quizzes, simply export them to your device:
+1. Go to **Manage** tab
+2. Click on the hamburger icon
+3. Select **Export**
+4. A timestamped quiz json file will be saved to your device
+
+You can then import the json file to retrieve the quizzes.
+
+Be warned: if you clear your browser's local storage (associated with this app), all quiz data stored on it will be gone. So try to export your data to your device periodically, or at least before you clear the local storage.
+
+Happy quizzing~ 💖
