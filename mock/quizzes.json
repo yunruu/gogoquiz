@@ -1,0 +1,139 @@
+[
+    {
+    "id": "quiz1",
+    "title": "General Knowledge Quiz",
+    "description": "A quiz to test your general knowledge skills.",
+    "questions": [
+        {
+        "id": "q1",
+        "title": "What is the capital of France?",
+        "options": [
+            { "text": "Berlin" },
+            { "text": "Madrid" },
+            { "text": "Paris" },
+            { "text": "Rome" }
+        ],
+        "correctOption": 2
+        },
+        {
+        "id": "q2",
+        "title": "Which planet is known as the Red Planet?",
+        "options": [
+            { "text": "Earth" },
+            { "text": "Mars" },
+            { "text": "Jupiter" },
+            { "text": "Saturn" }
+        ],
+        "correctOption": 1
+        }
+    ]
+    },
+    {
+    "id": "quiz2",
+    "title": "Science Quiz",
+    "description": "A quiz to test your science knowledge.",
+    "questions": [
+        {
+        "id": "q3",
+        "title": "What is the chemical symbol for water?",
+        "options": [
+            { "text": "O2" },
+            { "text": "H2O" },
+            { "text": "CO2" },
+            { "text": "NaCl" }
+        ],
+        "correctOption": 1
+        },
+        {
+        "id": "q4",
+        "title": "What gas do plants absorb from the atmosphere?",
+        "options": [
+            { "text": "Oxygen" },
+            { "text": "Carbon Dioxide" },
+            { "text": "Nitrogen" },
+            { "text": "Hydrogen" }
+        ],
+        "correctOption": 1
+        }
+    ]
+    },
+    {
+    "id": "quiz3",
+    "title": "History Quiz",
+    "description": "A quiz to test your history knowledge.",
+    "questions": [
+        {
+        "id": "q5",
+        "title": "Who was the first President of the United States?",
+        "options": [
+            { "text": "George Washington" },
+            { "text": "Abraham Lincoln" },
+            { "text": "Thomas Jefferson" },
+            { "text": "John Adams" }
+        ],
+        "correctOption": 0
+        },
+        {
+        "id": "q6",
+        "title": "In which year did World War II end?",
+        "options": [
+            { "text": "1939" },
+            { "text": "1942" },
+            { "text": "1944" },
+            { "text": "1945" }
+        ],
+        "correctOption": 3
+        },
+        {
+        "id": "q7",
+        "title": "Which ancient civilization built the pyramids?",
+        "options": [
+            { "text": "Egyptians" },
+            { "text": "Romans" },
+            { "text": "Greeks" },
+            { "text": "Mayans" }
+        ],
+        "correctOption": 0
+        }
+    ]
+    },
+    {
+    "id": "quiz4",
+    "title": "Mathematics Quiz",
+    "description": "A quiz to test your mathematics skills.",
+    "questions": [
+        {
+        "id": "q8",
+        "title": "What is 2 + 2?",
+        "options": [
+            { "text": "4" },
+            { "text": "3" },
+            { "text": "5" },
+            { "text": "6" }
+        ],
+        "correctOption": 0
+        },
+        {
+        "id": "q9",
+        "title": "What is the square root of 16?",
+        "options": [
+            { "text": "2" },
+            { "text": "3" },
+            { "text": "4" },
+            { "text": "5" }
+        ],
+        "correctOption": 2
+        },
+        {
+        "id": "q10",
+        "title": "What is 10 divided by 2?",
+        "options": [
+            { "text": "3" },
+            { "text": "4" },
+            { "text": "5" },
+            { "text": "10" }
+        ],
+        "correctOption": 3
+        }]
+    }
+]
